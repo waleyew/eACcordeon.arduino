@@ -9,7 +9,7 @@
 typedef struct SerialPacket
 {
    uint8_t _startbyte;
-   uint8_t pressure;
+   uint16_t pressure;
    uint64_t rightKeys;   
    uint64_t leftKeys;
    uint8_t _debugCharSymbol;

@@ -12,7 +12,7 @@ uint32_t P0; // Значение нулевого давления
 
 void pressure_Init()
 {
-  if (!bmp.begin(BMP085_ULTRALOWPOWER)) 
+  if (!bmp.begin(BMP085_STANDARD)) 
   {
     Serial.println("* Could not find a valid BMP085 sensor, check wiring!");
     while (1) 
@@ -35,8 +35,8 @@ void pressure_Loop()
   if (pressure < 0)
   pressure = -pressure;
   
-  if (pressure > 127)
-    pressure = 127;
+  if (pressure > 0xffff)
+    pressure = 0xffff;
 
   packet.pressure = pressure;
 
