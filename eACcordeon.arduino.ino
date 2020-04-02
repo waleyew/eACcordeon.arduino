@@ -20,6 +20,7 @@ void setup() {
 }
 
 //#define TEST_01
+//#define TEST_BASS_TO_SERIAL
 static bool RunTests();
 
 void loop() {
@@ -33,8 +34,8 @@ void loop() {
 }
 
 
+  
 
-//#define TEST_01
 static bool RunTests()
 {
   
@@ -64,6 +65,25 @@ static bool RunTests()
   //delay(500);
   return true;
 #endif
+
+
+
+#ifdef TEST_BASS_TO_SERIAL
+
+  for(int r=0; r<24; r++)
+    pinMode(bass_pins[r], INPUT_PULLUP); 
+    
+  while(1)
+  {
+    for (int r=0; r<24; r++)
+    {
+        Serial.print(digitalRead(bass_pins[r]) ? "." : "X");      
+    }
+    Serial.println();
+    delay(100);
+  }
+#endif
+
 
   return false;
 }

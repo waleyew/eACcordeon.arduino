@@ -24,6 +24,7 @@ byte colPins[COLS] = {2,3,4,5,6}; //connect to the column pinouts of the keypad
 
 
 
+
 void onKeyDown(int col, int row)
 {
   uint64_t keyCode = hexaKeys[col][row];
@@ -34,7 +35,7 @@ void onKeyDown(int col, int row)
 
 void keyboard_Init()
 {
-  // Инициализация клавиатуры
+  // Инициализация основной клавиатуры
   for(int r=0; r<ROWS; r++)
     pinMode(rowPins[r], INPUT_PULLUP); 
 
@@ -44,13 +45,21 @@ void keyboard_Init()
     pinMode(cPinId, OUTPUT);
     digitalWrite(cPinId, LOW); 
   }
+
+
+  // Инициализация басовой клавиатуры
+  for(int r=0; r<24; r++)
+    pinMode(bass_pins[r], INPUT_PULLUP); 
 }
+
+
 
 void keyboard_Loop()
 {
   packet.rightKeys = 0;
   packet.leftKeys = 0;
-    
+
+  // Обработка основной клавиатуры
   for (int c=0; c<COLS; c++)
   {
     byte cPinId = colPins[c];
@@ -64,5 +73,21 @@ void keyboard_Loop()
 
     digitalWrite(cPinId, LOW);
     //pinMode(cPinId, INPUT); 
+
+
+    // Обработка басовой клавиатуры
+    packet.leftKeys = 0;
+    for (int r=0; r<24; r++)
+    {
+      if (!digitalRead(bass_pins[r]))
+      {
+        // packet.leftKeys |= 1 << r;  // Так не работает, перепиливаем следующим образом:
+        uint8_t *p = (uint8_t*)&packet.leftKeys;
+        int id = r / 8;
+        int shift = r - id * 8;
+        p[id] |= 1 << shift;
+      }
+        
+    }
   }
 }
